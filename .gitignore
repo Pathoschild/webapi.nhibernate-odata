@@ -6,3 +6,5 @@ obj
 _ReSharper.*/
 packages/
 *.suo
+*.nupkg
+*.user

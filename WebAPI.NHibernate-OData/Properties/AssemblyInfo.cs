@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("pathoschild.webapi.nhibernate-odata")]
 [assembly: AssemblyDescription("Resolves LINQ compatibility issues between ASP.NET Web API OData and NHibernate.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Jesse Plamondon-Willard")]
@@ -20,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("b84802c0-20e9-4c5a-9d1f-e2608d93bca0")]
+[assembly: Guid("56597fed-b7b8-44b8-b29d-4365e17bfd51")]
 
 // Version information for an assembly consists of the following four values:
 //

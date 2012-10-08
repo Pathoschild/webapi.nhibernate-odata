@@ -1,7 +1,7 @@
 This package provides a `[FixOdataQuery]` action filter attribute which resolves LINQ compatibility issues between [ASP.NET Web API OData] and [NHibernate]. This is currently maintained against the [nightly OData builds] and the [NHibernate 3.4 trunk] due to additional compatibility issues between their stable releases.
 
 ## Usage
-Install the NuGet package and apply the attribute to your queryable Web API controller action:
+Install the [NuGet package] and apply the attribute to your queryable Web API controller action:
 
 ```c#
 [Queryable, FixOdataQuery]
@@ -51,3 +51,4 @@ If this query is passed to NHibernate, it will crash because it doesn't support 
 [NHibernate]: http://nhforge.org/
 [nightly OData builds]: http://www.myget.org/gallery/aspnetwebstacknightly
 [NHibernate 3.4 trunk]: https://github.com/nhibernate/nhibernate-core
+[NuGet package]: https://nuget.org/packages/Pathoschild.WebApi.NHibernate-OData

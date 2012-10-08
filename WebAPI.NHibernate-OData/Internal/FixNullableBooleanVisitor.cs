@@ -138,11 +138,7 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
 			if (this.ShouldRewrite(node, forceRewrite))
 			{
 				Type type = Nullable.GetUnderlyingType(node.Type);
-				//string was = node.ToString();
 				TExpression result = rewrite(type);
-				//this.Log.Write(() => "Rewriting {0} expression:\n\nWas:\n   NodeType: {0}\n   Type: {1}\n   Value: {2}\n\nNow:\n   NodeType: {3}\n   Type: {4}\n   Value: {5}.".FormatWith(
-				//	node.NodeType, node.Type, was, result.NodeType, result.Type, result
-				//));
 				return result;
 			}
 			return fallback();
