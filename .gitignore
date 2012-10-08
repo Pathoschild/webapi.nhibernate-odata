@@ -3,4 +3,6 @@ bin
 obj
 
 # mstest test results
-TestResults
+_ReSharper.*/
+packages/
+*.suo
