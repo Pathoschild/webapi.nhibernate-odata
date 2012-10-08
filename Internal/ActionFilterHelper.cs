@@ -8,7 +8,7 @@ using System.Web.Http.Controllers;
 
 namespace Pathoschild.WebApi.NhibernateOdata.Internal
 {
-	/// <summary>Provides helper methods for action filters on the Idealink API, including strongly-typed access to the Idealink context.</summary>
+	/// <summary>Provides helper methods for action filters on the Web API, including strongly-typed access to the controller context.</summary>
 	public class ActionFilterHelper
 	{
 		/*********
@@ -25,7 +25,7 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
 		/// <typeparam name="TController">The expected controller type.</typeparam>
 		/// <param name="context">The current HTTP controller context.</param>
 		/// <returns>Returns the controller instance.</returns>
-		/// <exception cref="InvalidOperationException">The controller handling this request is not an Idealink API controller.</exception>
+		/// <exception cref="InvalidOperationException">The controller handling this request is not a Web API controller.</exception>
 		public TController GetController<TController>(HttpControllerContext context)
 			where TController : ApiController
 		{

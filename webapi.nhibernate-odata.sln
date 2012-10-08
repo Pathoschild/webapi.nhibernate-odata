@@ -6,7 +6,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution", "solution", "{118F116D-683E-43D0-97BE-A9BC83A132CD}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
-		Packages.dgml = Packages.dgml
 		README.md = README.md
 		package.nuspec = package.nuspec
 		packages.config = packages.config

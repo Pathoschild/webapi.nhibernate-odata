@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace Pathoschild.WebApi.NhibernateOdata.Internal
 {
-	/// <summary>Intercepts queries before they're parsed by NHibernate to rewrite unsupported nullable-boolean conditions into boolean conditions.</summary>
+	/// <summary>Intercepts queries before they're parsed by NHibernate to rewrite unsupported nullable-boolean conditions into supported boolean conditions.</summary>
 	public class FixNullableBooleanVisitor : ExpressionVisitor
 	{
 		/*********
@@ -41,8 +41,6 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
 				return this.VisitConditional(node as ConditionalExpression);
 			if (node is BinaryExpression)
 				return this.VisitBinary(node as BinaryExpression);
-			if (node is UnaryExpression)
-				return this.VisitUnary(node as UnaryExpression);
 			return base.Visit(node);
 		}
 
@@ -56,28 +54,8 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
 		{
 			return this.SwitchVisit(
 				node,
-				type => Expression.Constant(node.Value ?? Activator.CreateInstance(type), type), // convert Nullable<T> to T ?? default(T)
+				type => Expression.Constant(node.Value ?? Activator.CreateInstance(type), type), // rewrite Nullable<T> with T ?? default(T)
 				() => node
-			);
-		}
-
-		/// <summary>Visits the children of the <see cref="T:System.Linq.Expressions.ConditionalExpression"/>.</summary>
-		/// <returns>The modified expression, if it or any subexpression was modified; otherwise, returns the original expression.</returns>
-		/// <param name="node">The expression to visit.</param>
-		protected override Expression VisitConditional(ConditionalExpression node)
-		{
-			return this.SwitchVisit(
-				node,
-				type =>
-				{
-					this.MarkForRewrite(node.IfTrue, node.IfFalse);
-					Expression test = this.Visit(node.Test);
-					Expression ifTrue = this.Visit(node.IfTrue);
-					Expression ifFalse = this.Visit(node.IfFalse);
-					return Expression.Condition(test, ifTrue, ifFalse, type);
-				},
-				() => base.VisitConditional(node),
-				forceRewrite: true
 			);
 		}
 
@@ -90,6 +68,7 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
 			{
 				case ExpressionType.AndAlso:
 					{
+						// ensure operands are not nullable
 						this.MarkForRewrite(node.Left, node.Right);
 						Expression left = this.Visit(node.Left);
 						Expression right = this.Visit(node.Right);
@@ -102,6 +81,7 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
 						Expression left = this.Visit(node.Left);
 						Expression right = this.Visit(node.Right);
 
+						// ensure operand types match (they can fall out of sync if one of them was rewritten)
 						if (left.Type != right.Type)
 						{
 							if (new[] { left, right }.All(p => p.Type != typeof(object) && !this.ShouldRewrite(p)))
@@ -112,7 +92,8 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
 							}
 						}
 
-						node = node.Update(left, this.VisitAndConvert(node.Conversion, "VisitBinary"), right);
+						// recreate node with IsLiftedToNull=false to prevent a Nullable<bool> operator value
+						node = Expression.Equal(left, right, false/*liftToNull*/, node.Method);
 						break;
 					}
 
