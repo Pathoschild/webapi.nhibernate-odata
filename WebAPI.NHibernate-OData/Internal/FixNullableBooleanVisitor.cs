@@ -110,16 +110,17 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
 		/// <param name="node">The expression to visit.</param>
 		protected override Expression VisitUnary(UnaryExpression node)
 		{
+			Expression operand = this.Visit(node.Operand);
 			return this.SwitchVisit(
 				node,
 				type =>
 				{
-					if (node.NodeType == ExpressionType.Convert && node.Operand.Type == type)
-						return node.Operand;
+					if (node.NodeType == ExpressionType.Convert && operand.Type == type)
+						return operand;
 					else
-						return node.Update(this.Visit(node.Operand));
+						return node.Update(operand);
 				},
-				() => node.Update(this.Visit(node.Operand))
+				() => node.Update(operand)
 			);
 		}
 
