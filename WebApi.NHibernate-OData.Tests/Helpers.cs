@@ -8,7 +8,6 @@ namespace WebApi.NHibernate_OData.Tests
 {
     public static class Helpers
     {
-
         public static ODataQueryOptions<T> Build<T>(string odataQueryString)
             where T : class
         {

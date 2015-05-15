@@ -35,6 +35,7 @@
     <Compile Include="FixOdataQueryAttribute.cs" />
     <Compile Include="Internal\ActionFilterHelper.cs" />
     <Compile Include="Internal\FixNullableBooleanVisitor.cs" />
+    <Compile Include="Internal\FixSubstringOfVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
