@@ -18,12 +18,12 @@ namespace Pathoschild.WebApi.NhibernateOdata
 		/// <param name="context">The HTTP response context.</param>
 		public override void OnActionExecuted(HttpActionExecutedContext context)
 		{
-		    if (!ActionFilterHelper.Instance.HasReturnType<IQueryable<object>>(context.Response))
-		    {
-		        return;
-		    }
+			if (!ActionFilterHelper.Instance.HasReturnType<IQueryable<object>>(context.Response))
+			{
+				return;
+			}
 
-		    ObjectContent content = (ObjectContent)context.Response.Content;
+			ObjectContent content = (ObjectContent)context.Response.Content;
 			Type entityType = content.ObjectType.GetGenericArguments().First();
 
 			this
@@ -33,29 +33,29 @@ namespace Pathoschild.WebApi.NhibernateOdata
 				.Invoke(this, new object[] { content });
 		}
 
-        /// <summary>
-        /// Applies all possible fixes for the IQueryable.
-        /// </summary>
-        /// <typeparam name="T">The generic type of the queryable</typeparam>
-        /// <param name="queryable">The queryable.</param>
-        /// <returns>A fixed IQueryable instance</returns>
-        public static IQueryable<T> ApplyFix<T>(IQueryable<T> queryable)
-        {
-            return queryable
-                .InterceptWith(
-                    new FixNullableBooleanVisitor(),
-                    new FixStringMethodsVisitor());
-        }
+		/// <summary>
+		/// Applies all possible fixes for the IQueryable.
+		/// </summary>
+		/// <typeparam name="T">The generic type of the queryable</typeparam>
+		/// <param name="queryable">The queryable.</param>
+		/// <returns>A fixed IQueryable instance</returns>
+		public static IQueryable<T> ApplyFix<T>(IQueryable<T> queryable)
+		{
+			return queryable
+				.InterceptWith(
+					new FixNullableBooleanVisitor(),
+					new FixStringMethodsVisitor());
+		}
 
-        public static IQueryable ApplyFixWithoutGeneric(IQueryable queryable)
-        {
-            Type entityType = queryable.GetType().GetGenericArguments().First();
+		public static IQueryable ApplyFixWithoutGeneric(IQueryable queryable)
+		{
+			Type entityType = queryable.GetType().GetGenericArguments().First();
 
-            return (IQueryable)typeof(FixOdataQueryAttribute)
-                .GetMethod("ApplyFix", BindingFlags.Public | BindingFlags.Static)
-                .MakeGenericMethod(entityType)
-                .Invoke(null, new object[] { queryable });
-        }
+			return (IQueryable)typeof(FixOdataQueryAttribute)
+				.GetMethod("ApplyFix", BindingFlags.Public | BindingFlags.Static)
+				.MakeGenericMethod(entityType)
+				.Invoke(null, new object[] { queryable });
+		}
 
 
 		/*********
