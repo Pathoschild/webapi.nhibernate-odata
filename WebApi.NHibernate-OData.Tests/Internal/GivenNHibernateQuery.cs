@@ -101,6 +101,7 @@ namespace WebApi.NHibernate_OData.Tests.Internal
         //[TestCase("$filter=not substringof('parent', Name)", 0)]
         [TestCase("$filter=startswith(Name, 'parent') eq false", 0)]
         [TestCase("$filter=endswith(Name, 'parent 61') eq false", 1)]
+        //[TestCase("$filter=substring(Name, 1, 2) eq 'ar'", 2)]
         public void When_filtering_one_column_with_methods_Then_uses_where_like(string filter, int resultCount)
         {
             var visitor = new FixStringMethodsVisitor();

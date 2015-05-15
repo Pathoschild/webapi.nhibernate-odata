@@ -19,7 +19,7 @@ namespace WebApi.NHibernate_OData.Tests.Internal
         {
             var visitor = new FixNullableBooleanVisitor();
             var odataQuery = Helpers.Build<Child>("$filter=Parent/Id eq 61 and Id eq 11");
-            var data = new[] { new Child() { Id = 11, Parent = new Parent() { Id = 61 } } }.AsQueryable();
+            var data = TestData.GetTestChildren();
 
             var results = odataQuery.ApplyTo(data).Cast<object>();
             results = results.InterceptWith(visitor);
