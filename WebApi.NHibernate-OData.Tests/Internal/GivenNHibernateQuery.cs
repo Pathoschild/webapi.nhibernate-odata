@@ -94,7 +94,7 @@ namespace WebApi.NHibernate_OData.Tests.Internal
 		}
 
 		[TestCase("$filter=substringof('parent', Name) eq true", 2)]
-		//[TestCase("$filter=substringof('parent', Name)", 2)]
+		[TestCase("$filter=substringof('parent', Name)", 2)]
 		[TestCase("$filter=startswith(Name, 'parent') eq true", 2)]
 		[TestCase("$filter=endswith(Name, 'parent 61') eq true", 1)]
 		[TestCase("$filter=substringof('parent', Name) eq false", 0)]
