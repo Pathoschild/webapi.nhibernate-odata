@@ -5,107 +5,87 @@ using System.Reflection;
 
 namespace Pathoschild.WebApi.NhibernateOdata.Internal
 {
-	/// <summary>
-	/// Intercepts queries before they're parsed by NHibernate to rewrite unsupported Lambdas for string.Contains, .StartsWith and .EndsWith.
-	/// </summary>
-	public class FixStringMethodsVisitor : ExpressionVisitor
-	{
-		/// <summary>Whether the visitor is visiting a nested node.</summary>
-		/// <remarks>This is used to recognize the top-level node for logging.</remarks>
-		private bool _isRecursing;
+    /// <summary>
+    /// Intercepts queries before they're parsed by NHibernate to rewrite unsupported Lambdas for string.Contains, .StartsWith and .EndsWith.
+    /// </summary>
+    public class FixStringMethodsVisitor : ExpressionVisitor
+    {
+        /// <summary>Whether the visitor is visiting a nested node.</summary>
+        /// <remarks>This is used to recognize the top-level node for logging.</remarks>
+        private bool _isRecursing;
 
-		private readonly List<MethodInfo> _stringMethods = new List<MethodInfo>();
+        private readonly List<MethodInfo> _stringMethods = new List<MethodInfo>();
 
-		public FixStringMethodsVisitor()
-		{
-			this._stringMethods.AddRange(typeof(string).GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(x => x.Name == "Contains" || x.Name == "StartsWith" || x.Name == "EndsWith"));
-		}
+        public FixStringMethodsVisitor()
+        {
+            this._stringMethods.AddRange(typeof(string).GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(x => x.Name == "Contains" || x.Name == "StartsWith" || x.Name == "EndsWith"));
+        }
 
-		/// <summary>Dispatches the expression to one of the more specialized visit methods in this class.</summary>
-		/// <returns>The modified expression, if it or any subexpression was modified; otherwise, returns the original expression.</returns>
-		/// <param name="node">The expression to visit.</param>
-		public override Expression Visit(Expression node)
-		{
-			// top node
-			if (!this._isRecursing)
-			{
-				this._isRecursing = true;
-				return base.Visit(node);
-			}
-
-			var expression = node as LambdaExpression;
-			if (expression != null)
-			{
-				var result = this.IsODataContainsLambda(expression);
-
-				return Expression.Lambda(result, expression.Parameters);
-			}
-
-			return base.Visit(node);
-		}
-
-        private Expression IsODataContainsLambda(LambdaExpression original)
-		{
-            var one = original.Body as BinaryExpression;
-			if (one != null)
-			{
-                // This handles the case of substringof() eq (True|False).
-				var binaryExpression = one.Left as BinaryExpression;
-				if (binaryExpression != null)
-				{
-					var three = binaryExpression.Left as ConditionalExpression;
-                    return this.HandleConditionalExpression(original, three, binaryExpression.Right);
-				}
-
-                // This tries to handle the case substringof() on its own.
-			    var conditionalExpression = one.Left as ConditionalExpression;
-			    return this.HandleConditionalExpression(original, conditionalExpression, one.Right);
-			}
-
-            return original;
-		}
-
-	    private Expression HandleConditionalExpression(LambdaExpression original, ConditionalExpression three, Expression rightOfMethodCall)
-	    {
-            if (three != null)
+        /// <summary>Dispatches the expression to one of the more specialized visit methods in this class.</summary>
+        /// <returns>The modified expression, if it or any subexpression was modified; otherwise, returns the original expression.</returns>
+        /// <param name="node">The expression to visit.</param>
+        public override Expression Visit(Expression node)
+        {
+            // top node
+            if (!this._isRecursing)
             {
-                var four = three.IfFalse as UnaryExpression;
-                if (four != null)
+                this._isRecursing = true;
+                return base.Visit(node);
+            }
+
+            var conditionalExpression = node as ConditionalExpression;
+            if (conditionalExpression != null)
+            {
+                return this.HandleConditionalExpression(node, conditionalExpression);
+            }
+
+            return base.Visit(node);
+        }
+
+        /// <summary>
+        /// Handles the conditional expression equivalent to the .If {} .Else {} at the bottom of the file.
+        /// </summary>
+        /// <param name="original">The original expression</param>
+        /// <param name="ifElse">The three.</param>
+        /// <returns>A reduced if/else statement if it contains any of the matched methods. Otherwise, the original expression.</returns>
+        private Expression HandleConditionalExpression(Expression original, ConditionalExpression ifElse)
+        {
+            var elseExpression = ifElse.IfFalse as UnaryExpression;
+            if (elseExpression != null)
+            {
+                var methodCallExpression = elseExpression.Operand as MethodCallExpression;
+                if (methodCallExpression != null)
                 {
-                    var five = four.Operand as MethodCallExpression;
-                    if (five != null)
+                    if (this._stringMethods.Contains(methodCallExpression.Method))
                     {
-                        if (this._stringMethods.Contains(five.Method))
-                        {
-                            var callMethod = Expression.Call(
-                                five.Object,
-                                five.Method,
-                                five.Arguments);
+                        var methodCallReplacement = Expression.Call(
+                            methodCallExpression.Object,
+                            methodCallExpression.Method,
+                            methodCallExpression.Arguments);
 
-                            // Convert the result to a nullable boolean so the Expression.Equal works.
-                            var callMethod2 = Expression.Convert(callMethod, typeof(bool?));
+                        // Convert the result to a nullable boolean so the Expression.Equal works.
+                        var result = Expression.Convert(methodCallReplacement, typeof(bool?));
 
-                            return Expression.Equal(callMethod2, rightOfMethodCall);
-                        }
+                        return result;
                     }
                 }
             }
 
-	        return original;
-	    }
+            return original;
+        }
 
-	    // The following expression tree is generated by the ODataQueryOptions.ApplyTo method. We 
-		//.Lambda #Lambda1<System.Func`2[WebApi.NHibernate_OData.Tests.Models.Parent,System.Boolean]>(WebApi.NHibernate_OData.Tests.Models.Parent $$it)
-		// {
-		//     (.If (
-		//         $$it.Name == null | .Constant<System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.String]>(System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.String]).TypedProperty ==
-		//         null
-		//     ) {
-		//         null
-		//     } .Else {
-		//         (System.Nullable`1[System.Boolean]).Call ($$it.Name).Contains(.Constant<System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.String]>(System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.String]).TypedProperty)
-		//     } == (System.Nullable`1[System.Boolean]).Constant<System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.Boolean]>(System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.Boolean]).TypedProperty)
-		//     == .Constant<System.Nullable`1[System.Boolean]>(True)
-		// }
-	}
+        // The following expression tree is generated by the ODataQueryOptions.ApplyTo method. We 
+        //.Lambda #Lambda1<System.Func`2[WebApi.NHibernate_OData.Tests.Models.Parent,System.Boolean]>(WebApi.NHibernate_OData.Tests.Models.Parent $$it)
+        // {
+        //     (.If (
+        //         $$it.Name == null | .Constant<System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.String]>(System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.String]).TypedProperty ==
+        //         null
+        //     ) {
+        //         null
+        //     } .Else {
+        //         (System.Nullable`1[System.Boolean]).Call ($$it.Name).Contains(.Constant<System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.String]>(System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.String]).TypedProperty)
+        //     } == (System.Nullable`1[System.Boolean]).Constant<System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.Boolean]>(System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.Boolean]).TypedProperty)
+        //     == .Constant<System.Nullable`1[System.Boolean]>(True)
+        // }
+    }
 }
