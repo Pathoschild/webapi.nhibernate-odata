@@ -20,11 +20,11 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
 
 
 		/*********
-		** Protected methods
+		** Public methods
 		*********/
 		/// <summary>Dispatches the expression to one of the more specialized visit methods in this class.</summary>
-		/// <returns>The modified expression, if it or any subexpression was modified; otherwise, returns the original expression.</returns>
 		/// <param name="node">The expression to visit.</param>
+		/// <returns>The modified expression, if it or any subexpression was modified; otherwise, returns the original expression.</returns>
 		public override Expression Visit(Expression node)
 		{
 			// top node
@@ -48,8 +48,8 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
 		** ExpressionVisitor
 		***/
 		/// <summary>Visits the <see cref="T:System.Linq.Expressions.ConstantExpression"/>.</summary>
-		/// <returns>The modified expression, if it or any subexpression was modified; otherwise, returns the original expression.</returns>
 		/// <param name="node">The expression to visit.</param>
+		/// <returns>The modified expression, if it or any subexpression was modified; otherwise, returns the original expression.</returns>
 		protected override Expression VisitConstant(ConstantExpression node)
 		{
 			return this.SwitchVisit(
@@ -60,8 +60,8 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
 		}
 
 		/// <summary>Visits the children of the <see cref="T:System.Linq.Expressions.BinaryExpression"/>.</summary>
-		/// <returns>The modified expression, if it or any subexpression was modified; otherwise, returns the original expression.</returns>
 		/// <param name="node">The expression to visit.</param>
+		/// <returns>The modified expression, if it or any subexpression was modified; otherwise, returns the original expression.</returns>
 		protected override Expression VisitBinary(BinaryExpression node)
 		{
 			switch (node.NodeType)
@@ -106,8 +106,8 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
 		}
 
 		/// <summary>Visits the children of the <see cref="T:System.Linq.Expressions.UnaryExpression"/>.</summary>
-		/// <returns>The modified expression, if it or any subexpression was modified; otherwise, returns the original expression.</returns>
 		/// <param name="node">The expression to visit.</param>
+		/// <returns>The modified expression, if it or any subexpression was modified; otherwise, returns the original expression.</returns>
 		protected override Expression VisitUnary(UnaryExpression node)
 		{
 			Expression operand = this.Visit(node.Operand);
@@ -125,7 +125,7 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
 		}
 
 		/***
-		** Internal
+		** Protected methods
 		***/
 		/// <summary>Defines the behaviour for visiting a node depending on whether it should be rewritten.</summary>
 		/// <typeparam name="TExpression">The expression type.</typeparam>

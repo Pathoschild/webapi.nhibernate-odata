@@ -31,11 +31,37 @@ namespace Pathoschild.WebApi.NhibernateOdata
 				.Invoke(this, new object[] { content });
 		}
 
+		/// <summary>Applies all possible fixes for the queryable.</summary>
+		/// <typeparam name="T">The generic element type for the queryable.</typeparam>
+		/// <param name="queryable">The queryable.</param>
+		/// <returns>A corrected IQueryable instance.</returns>
+		public static IQueryable<T> ApplyFix<T>(IQueryable<T> queryable)
+		{
+			return queryable
+				.InterceptWith(
+					new FixNullableBooleanVisitor(),
+					new FixStringMethodsVisitor()
+				);
+		}
+
+		/// <summary>Applies all possible fixes for the queryable.</summary>
+		/// <param name="queryable">The queryable.</param>
+		/// <returns>A corrected IQueryable instance.</returns>
+		public static IQueryable ApplyFixWithoutGeneric(IQueryable queryable)
+		{
+			Type entityType = queryable.GetType().GetGenericArguments().First();
+
+			return (IQueryable)typeof(FixOdataQueryAttribute)
+				.GetMethod("ApplyFix", BindingFlags.Public | BindingFlags.Static)
+				.MakeGenericMethod(entityType)
+				.Invoke(null, new object[] { queryable });
+		}
+
 
 		/*********
 		** Protected methods
 		*********/
-		/// <summary>Cause the deferred query to be immediately executed.</summary>
+		/// <summary>Causes the deferred query to be immediately executed.</summary>
 		/// <typeparam name="TItem">The query element type.</typeparam>
 		/// <param name="content">The content to execute.</param>
 		/// <dev>This method is invoked with reflection in <see cref="OnActionExecuted"/>; beware changing its signature.</dev>
@@ -43,7 +69,7 @@ namespace Pathoschild.WebApi.NhibernateOdata
 		{
 			// get queryable return value
 			IQueryable<TItem> query = content.Value as IQueryable<TItem>;
-			content.Value = query.InterceptWith(new FixNullableBooleanVisitor());
+			content.Value = ApplyFix(query);
 		}
 	}
 }

@@ -35,14 +35,16 @@
     <Compile Include="FixOdataQueryAttribute.cs" />
     <Compile Include="Internal\ActionFilterHelper.cs" />
     <Compile Include="Internal\FixNullableBooleanVisitor.cs" />
+    <Compile Include="Internal\FixStringMethodsVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.4.5.10\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="QueryInterceptor">
-      <HintPath>..\packages\QueryInterceptor.0.1.4237.2400\lib\net40\QueryInterceptor.dll</HintPath>
+    <Reference Include="QueryInterceptor, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\QueryInterceptor.0.2\lib\net40\QueryInterceptor.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Net.Http" />

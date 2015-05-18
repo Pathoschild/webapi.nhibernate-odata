@@ -46,7 +46,39 @@ If this query is passed to NHibernate, it will crash because it doesn't support 
         (System.Nullable`1[System.Int32])($$it.Parent).ID
     } == (System.Nullable`1[System.Int32])61 AndAlso $$it.ID == 11) == True
 
+### SubstringOf, StartsWith, EndsWith methods
 
+OData generates fairly complex expression trees for all these methods.
+
+For example, the following query
+
+    /items?$filter=substringof('parent', Name) eq true
+
+...is converted by ASP.NET Web API OData into an expression tree like this:
+
+	.Lambda #Lambda1<System.Func`2[Pathoschild.WebApi.NhibernateOdata.Tests.Models.Parent,System.Boolean]>(Pathoschild.WebApi.NhibernateOdata.Tests.Models.Parent $$it)
+	{
+	    (.If (
+	        $$it.Name == null | .Constant<System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.String]>(System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.String]).TypedProperty ==
+	        null
+	    ) {
+	        null
+	    } .Else {
+	        (System.Nullable`1[System.Boolean]).Call ($$it.Name).Contains(.Constant<System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.String]>(System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.String]).TypedProperty)
+	    } == (System.Nullable`1[System.Boolean]).Constant<System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.Boolean]>(System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.Boolean]).TypedProperty)
+	    == .Constant<System.Nullable`1[System.Boolean]>(True)
+    }
+
+NHibernate fails to parse this into an SQL query. The `FixStringMethodsVisitor` will transform it into the following:
+
+    .Lambda #Lambda1<System.Func`2[Pathoschild.WebApi.NhibernateOdata.Tests.Models.Parent,System.Boolean]>(Pathoschild.WebApi.NhibernateOdata.Tests.Models.Parent $$it)
+    {
+        (System.Nullable`1[System.Boolean]).Call ($$it.Name).Contains(.Constant<System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.String]>(System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.String]).TypedProperty)
+        == (System.Nullable`1[System.Boolean]).Constant<System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.Boolean]>(System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.Boolean]).TypedProperty
+    }
+
+...and now NHibernate can parse it and generate the proper SQL queries.
+    
 [ASP.NET Web API OData]: http://www.asp.net/web-api/overview/odata-support-in-aspnet-web-api
 [NHibernate]: http://nhforge.org/
 [nightly OData builds]: http://www.myget.org/gallery/aspnetwebstacknightly
