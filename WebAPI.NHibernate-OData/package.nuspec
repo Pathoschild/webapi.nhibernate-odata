@@ -1,15 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <package>
 	<metadata>
+		<title>WebAPI OData for NHibernate</title>
 		<id>Pathoschild.WebApi.NHibernate-OData</id>
-		<version>0.1.0-alpha</version>
-		<authors>Jesse Plamondon-Willard</authors>
-		<description>Resolves LINQ compatibility issues between ASP.NET Web API OData and NHibernate.</description>
+		<version>0.2.0</version>
+		<authors>Jesse Plamondon-Willard, Christian Droulers</authors>
+		<description>Resolves LINQ compatibility issues between ASP.NET Web API OData and LINQ to NHibernate.</description>
 		<licenseUrl>https://creativecommons.org/licenses/by/3.0/</licenseUrl>
 		<projectUrl>https://github.com/Pathoschild/webapi.nhibernate-odata#readme</projectUrl>
 		<dependencies>
 			<dependency id="Microsoft.AspNet.WebApi.Core" version="4.0" />
-			<dependency id="QueryInterceptor" version="0.1" />
+			<dependency id="QueryInterceptor" version="0.2" />
 		</dependencies>
 	</metadata>
 </package>
