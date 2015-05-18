@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace WebApi.NHibernate_OData.Tests.Models
+namespace Pathoschild.WebApi.NhibernateOdata.Tests.Models
 {
 	public class TestData
 	{

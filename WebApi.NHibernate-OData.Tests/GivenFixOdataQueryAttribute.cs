@@ -1,9 +1,8 @@
 ﻿using System.Linq;
 using NUnit.Framework;
-using Pathoschild.WebApi.NhibernateOdata;
-using WebApi.NHibernate_OData.Tests.Models;
+using Pathoschild.WebApi.NhibernateOdata.Tests.Models;
 
-namespace WebApi.NHibernate_OData.Tests
+namespace Pathoschild.WebApi.NhibernateOdata.Tests
 {
 	[TestFixture]
 	public class GivenFixOdataQueryAttribute

@@ -1,21 +1,15 @@
 ﻿using System;
 using System.Linq;
-
 using Newtonsoft.Json;
-
 using NHibernate;
 using NHibernate.Linq;
-
 using NUnit.Framework;
-
 using Pathoschild.WebApi.NhibernateOdata.Internal;
-
+using Pathoschild.WebApi.NhibernateOdata.Tests.Mappings;
+using Pathoschild.WebApi.NhibernateOdata.Tests.Models;
 using QueryInterceptor;
 
-using WebApi.NHibernate_OData.Tests.Mappings;
-using WebApi.NHibernate_OData.Tests.Models;
-
-namespace WebApi.NHibernate_OData.Tests.Internal
+namespace Pathoschild.WebApi.NhibernateOdata.Tests.Internal
 {
 	// ReSharper disable InconsistentNaming
 	[TestFixture]

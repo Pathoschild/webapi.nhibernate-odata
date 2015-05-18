@@ -2,18 +2,15 @@
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Reflection;
-
 using FluentMigrator.Runner;
 using FluentMigrator.Runner.Announcers;
 using FluentMigrator.Runner.Initialization;
 using FluentMigrator.Runner.Processors;
-
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
-
 using NHibernate;
 
-namespace WebApi.NHibernate_OData.Tests.Mappings
+namespace Pathoschild.WebApi.NhibernateOdata.Tests.Mappings
 {
 	public static class NHibernateHelper
 	{
@@ -54,16 +51,16 @@ namespace WebApi.NHibernate_OData.Tests.Mappings
 				{
 					command.CommandText = string.Format(
 						@"IF EXISTS(select * from sys.databases where name='{0}')
-                        BEGIN
-                            DECLARE @DatabaseName nvarchar(50)
-                            SET @DatabaseName = N'{0}'
-                            DECLARE @Sql varchar(max)
-                            SELECT @Sql = COALESCE(@Sql,'') + 'Kill ' + Convert(varchar, SPId) + ';'
-                                FROM MASTER..SysProcesses
-                                WHERE DBId = DB_ID(@DatabaseName) AND SPId <> @@SPId
-                            EXEC(@Sql)
-                            DROP DATABASE [{0}]
-                        END",
+						BEGIN
+							DECLARE @DatabaseName nvarchar(50)
+							SET @DatabaseName = N'{0}'
+							DECLARE @Sql varchar(max)
+							SELECT @Sql = COALESCE(@Sql,'') + 'Kill ' + Convert(varchar, SPId) + ';'
+								FROM MASTER..SysProcesses
+								WHERE DBId = DB_ID(@DatabaseName) AND SPId <> @@SPId
+							EXEC(@Sql)
+							DROP DATABASE [{0}]
+						END",
 						databaseName);
 
 					command.ExecuteNonQuery();

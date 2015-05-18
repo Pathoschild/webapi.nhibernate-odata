@@ -1,8 +1,7 @@
 ﻿using FluentNHibernate.Mapping;
+using Pathoschild.WebApi.NhibernateOdata.Tests.Models;
 
-using WebApi.NHibernate_OData.Tests.Models;
-
-namespace WebApi.NHibernate_OData.Tests.Mappings
+namespace Pathoschild.WebApi.NhibernateOdata.Tests.Mappings
 {
 	public class ParentMap : ClassMap<Parent>
 	{

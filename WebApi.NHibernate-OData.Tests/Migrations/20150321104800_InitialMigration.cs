@@ -1,6 +1,6 @@
 ﻿using FluentMigrator;
 
-namespace WebApi.NHibernate_OData.Tests.Migrations
+namespace Pathoschild.WebApi.NhibernateOdata.Tests.Migrations
 {
 	[Migration(20150321104800)]
 	public class InitialMigration : Migration

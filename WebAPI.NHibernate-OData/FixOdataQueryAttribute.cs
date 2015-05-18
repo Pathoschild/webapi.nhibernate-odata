@@ -19,9 +19,7 @@ namespace Pathoschild.WebApi.NhibernateOdata
 		public override void OnActionExecuted(HttpActionExecutedContext context)
 		{
 			if (!ActionFilterHelper.Instance.HasReturnType<IQueryable<object>>(context.Response))
-			{
 				return;
-			}
 
 			ObjectContent content = (ObjectContent)context.Response.Content;
 			Type entityType = content.ObjectType.GetGenericArguments().First();
@@ -33,20 +31,22 @@ namespace Pathoschild.WebApi.NhibernateOdata
 				.Invoke(this, new object[] { content });
 		}
 
-		/// <summary>
-		/// Applies all possible fixes for the IQueryable.
-		/// </summary>
-		/// <typeparam name="T">The generic type of the queryable</typeparam>
+		/// <summary>Applies all possible fixes for the queryable.</summary>
+		/// <typeparam name="T">The generic element type for the queryable.</typeparam>
 		/// <param name="queryable">The queryable.</param>
-		/// <returns>A fixed IQueryable instance</returns>
+		/// <returns>A corrected IQueryable instance.</returns>
 		public static IQueryable<T> ApplyFix<T>(IQueryable<T> queryable)
 		{
 			return queryable
 				.InterceptWith(
 					new FixNullableBooleanVisitor(),
-					new FixStringMethodsVisitor());
+					new FixStringMethodsVisitor()
+				);
 		}
 
+		/// <summary>Applies all possible fixes for the queryable.</summary>
+		/// <param name="queryable">The queryable.</param>
+		/// <returns>A corrected IQueryable instance.</returns>
 		public static IQueryable ApplyFixWithoutGeneric(IQueryable queryable)
 		{
 			Type entityType = queryable.GetType().GetGenericArguments().First();
@@ -61,7 +61,7 @@ namespace Pathoschild.WebApi.NhibernateOdata
 		/*********
 		** Protected methods
 		*********/
-		/// <summary>Cause the deferred query to be immediately executed.</summary>
+		/// <summary>Causes the deferred query to be immediately executed.</summary>
 		/// <typeparam name="TItem">The query element type.</typeparam>
 		/// <param name="content">The content to execute.</param>
 		/// <dev>This method is invoked with reflection in <see cref="OnActionExecuted"/>; beware changing its signature.</dev>

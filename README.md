@@ -56,7 +56,7 @@ For example, the following query
 
 ...is converted by ASP.NET Web API OData into an expression tree like this:
 
-	.Lambda #Lambda1<System.Func`2[WebApi.NHibernate_OData.Tests.Models.Parent,System.Boolean]>(WebApi.NHibernate_OData.Tests.Models.Parent $$it)
+	.Lambda #Lambda1<System.Func`2[Pathoschild.WebApi.NhibernateOdata.Tests.Models.Parent,System.Boolean]>(Pathoschild.WebApi.NhibernateOdata.Tests.Models.Parent $$it)
 	{
 	    (.If (
 	        $$it.Name == null | .Constant<System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.String]>(System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.String]).TypedProperty ==
@@ -71,7 +71,7 @@ For example, the following query
 
 NHibernate fails to parse this into an SQL query. The `FixStringMethodsVisitor` will transform it into the following:
 
-    .Lambda #Lambda1<System.Func`2[WebApi.NHibernate_OData.Tests.Models.Parent,System.Boolean]>(WebApi.NHibernate_OData.Tests.Models.Parent $$it)
+    .Lambda #Lambda1<System.Func`2[Pathoschild.WebApi.NhibernateOdata.Tests.Models.Parent,System.Boolean]>(Pathoschild.WebApi.NhibernateOdata.Tests.Models.Parent $$it)
     {
         (System.Nullable`1[System.Boolean]).Call ($$it.Name).Contains(.Constant<System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.String]>(System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.String]).TypedProperty)
         == (System.Nullable`1[System.Boolean]).Constant<System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.Boolean]>(System.Web.Http.OData.Query.Expressions.LinqParameterContainer+TypedLinqParameterContainer`1[System.Boolean]).TypedProperty

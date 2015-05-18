@@ -4,7 +4,7 @@ using System.Web.Http.OData;
 using System.Web.Http.OData.Builder;
 using System.Web.Http.OData.Query;
 
-namespace WebApi.NHibernate_OData.Tests
+namespace Pathoschild.WebApi.NhibernateOdata.Tests
 {
 	public static class Helpers
 	{

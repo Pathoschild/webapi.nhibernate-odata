@@ -7,7 +7,7 @@
     <ProjectGuid>{F57860D1-0D06-47B7-9C00-F8826A8F7D81}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WebApi.NHibernate_OData.Tests</RootNamespace>
+    <RootNamespace>Pathoschild.WebApi.NhibernateOdata.Tests</RootNamespace>
     <AssemblyName>WebApi.NHibernate-OData.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

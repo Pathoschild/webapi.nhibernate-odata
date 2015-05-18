@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace WebApi.NHibernate_OData.Tests.Models
+namespace Pathoschild.WebApi.NhibernateOdata.Tests.Models
 {
 	[DebuggerDisplay("Child {ToString()}")]
 	public class Child
