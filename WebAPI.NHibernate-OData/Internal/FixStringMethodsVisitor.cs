@@ -22,6 +22,8 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
     ///    == .Constant&lt;System.Nullable`1[System.Boolean]&gt;(True)
     /// }
     /// </code>
+    /// 
+    /// The actual System.Web.Http.OData parser DOES NOT support the "replace" string method, so we can't make it go through NHibernate.
     /// </remarks>
     public class FixStringMethodsVisitor : ExpressionVisitor
     {
@@ -99,14 +101,15 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
             if (firstLevelMethodCallExpression != null)
             {
                 // Using the method name and declaring type as strings because I don't want to add a dependency to the project for a simple check like that.
-                if (firstLevelMethodCallExpression.Method.Name == "SubstringStartAndLength" &&
-                    firstLevelMethodCallExpression.Method.DeclaringType != null &&
-                    firstLevelMethodCallExpression.Method.DeclaringType.FullName == "System.Web.Http.OData.Query.Expressions.ClrSafeFunctions")
+                if (firstLevelMethodCallExpression.Method.DeclaringType != null &&
+                    firstLevelMethodCallExpression.Method.DeclaringType.FullName == "System.Web.Http.OData.Query.Expressions.ClrSafeFunctions" &&
+                    (firstLevelMethodCallExpression.Method.Name == "SubstringStartAndLength"  || firstLevelMethodCallExpression.Method.Name == "SubstringStart"))
                 {
+                    var arguments = firstLevelMethodCallExpression.Arguments.Skip(1).ToArray();
                     return Expression.Call(
                         firstLevelMethodCallExpression.Arguments[0],
-                        typeof(string).GetMethod("Substring", new[] { typeof(int), typeof(int) }),
-                        firstLevelMethodCallExpression.Arguments.Skip(1).ToArray());
+                        typeof(string).GetMethod("Substring", arguments.Select(x => typeof(int)).ToArray()),
+                        arguments);
                 }
             }
 

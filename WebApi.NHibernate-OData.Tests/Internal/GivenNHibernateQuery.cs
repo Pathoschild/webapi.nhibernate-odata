@@ -87,6 +87,7 @@ namespace Pathoschild.WebApi.NhibernateOdata.Tests.Internal
             Assert.Inconclusive("Gotta check the output of NHibernate");
         }
 
+        [TestCase("$filter=Name eq 'parent 61'", 1)]
         [TestCase("$filter=substringof('parent', Name) eq true", 2)]
         [TestCase("$filter=substringof('parent', Name) eq true and substringof('61', Name) eq false", 1)]
         [TestCase("$filter=substringof('parent', Name)", 2)]
@@ -97,9 +98,15 @@ namespace Pathoschild.WebApi.NhibernateOdata.Tests.Internal
         [TestCase("$filter=not substringof('wot', Name) and startswith(Name, 'parent 61')", 1)]
         [TestCase("$filter=startswith(Name, 'parent') eq false", 0)]
         [TestCase("$filter=endswith(Name, 'parent 61') eq false", 1)]
+        [TestCase("$filter=substring(Name, 1) eq 'arent 61'", 1)]
         [TestCase("$filter=substring(Name, 1, 2) eq 'ar'", 2)]
         [TestCase("$filter=substring(Name, 1, 2) eq 'ar' and startswith(Name, 'par')", 2)]
-        public void When_filtering_one_column_with_methods_Then_uses_where_like(string filter, int resultCount)
+        [TestCase("$filter=tolower(Name) eq 'parent 61' and toupper(Name) eq 'PARENT 61'", 1)]
+        [TestCase("$filter=trim(Name) eq 'parent 61'", 1)]
+        [TestCase("$filter=length(Name) eq 9", 2)]
+        //[TestCase("$filter=indexof(Name, '61') eq 6", 1)]
+        //[TestCase("$filter=concat(Name, 'test') eq 'parent 61test'", 1)]
+        public void When_filtering_with_string_methods_Then_generates_proper_nhibernate_query(string filter, int resultCount)
         {
             var visitor = new FixStringMethodsVisitor();
             var odataQuery = Helpers.Build<Parent>(filter);
@@ -108,20 +115,6 @@ namespace Pathoschild.WebApi.NhibernateOdata.Tests.Internal
 
             var results = odataQuery.ApplyTo(parents).Cast<Parent>().ToList();
             Assert.That(results, Has.Count.EqualTo(resultCount));
-        }
-
-        [Test]
-        public void When_filtering_one_column_with_eq_Then_uses_where()
-        {
-            Console.WriteLine("What it should look like:");
-            var r = this._session.Query<Parent>().Where(x => x.Name == "parent");
-            Console.WriteLine("{0} results", r.ToList().Count);
-
-            var odataQuery = Helpers.Build<Parent>("$filter=Name eq 'parent 61'");
-            var parents = this._session.Query<Parent>();
-
-            var results = odataQuery.ApplyTo(parents).Cast<Parent>().ToList();
-            Assert.That(results, Has.Count.EqualTo(1));
         }
     }
 }
