@@ -37,8 +37,11 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
         /// <summary>A list of boolean return <see cref="string"/> methods supported by this visitor.</summary>
         private readonly List<MethodInfo> BooleanReturnStringMethods = new List<MethodInfo>();
 
-        /// <summary>A list of <see cref="string"/> methods supported by this visitor.</summary>
+        /// <summary>A list of integer return <see cref="string"/> methods supported by this visitor.</summary>
         private readonly List<MethodInfo> IntegerStringMethods = new List<MethodInfo>();
+
+        /// <summary>A list of concatenation <see cref="string"/> methods supported by this visitor.</summary>
+        private readonly List<MethodInfo> ConcatStringMethods = new List<MethodInfo>();
 
 
         /*********
@@ -49,6 +52,7 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
         {
             this.BooleanReturnStringMethods.AddRange(typeof(string).GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(x => x.Name == "Contains" || x.Name == "StartsWith" || x.Name == "EndsWith"));
             this.IntegerStringMethods.AddRange(typeof(string).GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(x => x.Name == "IndexOf").ToList());
+            this.ConcatStringMethods.AddRange(typeof(string).GetMethods(BindingFlags.Public | BindingFlags.Static).Where(x => x.Name == "Concat").ToList());
         }
 
         /// <summary>Dispatches the expression to one of the more specialized visit methods in this class.</summary>
@@ -124,6 +128,11 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
                         firstLevelMethodCallExpression.Arguments[0],
                         typeof(string).GetMethod("Substring", arguments.Select(x => typeof(int)).ToArray()),
                         arguments);
+                }
+
+                if (this.ConcatStringMethods.Contains(firstLevelMethodCallExpression.Method))
+                {
+                    return Expression.Add(firstLevelMethodCallExpression.Arguments.First(), firstLevelMethodCallExpression.Arguments.Last(), firstLevelMethodCallExpression.Method);
                 }
             }
 

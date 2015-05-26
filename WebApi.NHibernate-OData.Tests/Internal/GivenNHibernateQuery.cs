@@ -105,7 +105,7 @@ namespace Pathoschild.WebApi.NhibernateOdata.Tests.Internal
         [TestCase("$filter=trim(Name) eq 'parent 61'", 1)]
         [TestCase("$filter=length(Name) eq 9", 2)]
         [TestCase("$filter=indexof(Name, '61') eq 8", 1)]
-        //[TestCase("$filter=concat(Name, 'test') eq 'parent 61test'", 1)]
+        [TestCase("$filter=concat(Name, 'test') eq 'parent 61test'", 1)]
         public void When_filtering_with_string_methods_Then_generates_proper_nhibernate_query(string filter, int resultCount)
         {
             var visitor = new FixStringMethodsVisitor();
