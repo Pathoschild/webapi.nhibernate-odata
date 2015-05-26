@@ -34,8 +34,11 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
         /// <remarks>This is used to recognize the top-level node for logging.</remarks>
         private bool IsRecursing;
 
+        /// <summary>A list of boolean return <see cref="string"/> methods supported by this visitor.</summary>
+        private readonly List<MethodInfo> BooleanReturnStringMethods = new List<MethodInfo>();
+
         /// <summary>A list of <see cref="string"/> methods supported by this visitor.</summary>
-        private readonly List<MethodInfo> StringMethods = new List<MethodInfo>();
+        private readonly List<MethodInfo> IntegerStringMethods = new List<MethodInfo>();
 
 
         /*********
@@ -44,7 +47,8 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
         /// <summary>Constructs an instance.</summary>
         public FixStringMethodsVisitor()
         {
-            this.StringMethods.AddRange(typeof(string).GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(x => x.Name == "Contains" || x.Name == "StartsWith" || x.Name == "EndsWith"));
+            this.BooleanReturnStringMethods.AddRange(typeof(string).GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(x => x.Name == "Contains" || x.Name == "StartsWith" || x.Name == "EndsWith"));
+            this.IntegerStringMethods.AddRange(typeof(string).GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(x => x.Name == "IndexOf").ToList());
         }
 
         /// <summary>Dispatches the expression to one of the more specialized visit methods in this class.</summary>
@@ -82,7 +86,7 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
                 var methodCallExpression = elseExpression.Operand as MethodCallExpression;
                 if (methodCallExpression != null)
                 {
-                    if (this.StringMethods.Contains(methodCallExpression.Method))
+                    if (this.BooleanReturnStringMethods.Contains(methodCallExpression.Method))
                     {
                         var methodCallReplacement = Expression.Call(
                             methodCallExpression.Object,
@@ -91,7 +95,17 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
 
                         // Convert the result to a nullable boolean so the Expression.Equal works.
                         var result = Expression.Convert(methodCallReplacement, typeof(bool?));
+                        return result;
+                    }
 
+                    if (this.IntegerStringMethods.Contains(methodCallExpression.Method))
+                    {
+                        var methodCallReplacement = Expression.Call(
+                            methodCallExpression.Object,
+                            methodCallExpression.Method,
+                            methodCallExpression.Arguments);
+
+                        var result = Expression.Convert(methodCallReplacement, typeof(int?));
                         return result;
                     }
                 }
