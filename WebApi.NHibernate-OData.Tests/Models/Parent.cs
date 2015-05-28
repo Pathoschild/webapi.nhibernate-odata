@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Pathoschild.WebApi.NhibernateOdata.Tests.Models
@@ -8,7 +9,11 @@ namespace Pathoschild.WebApi.NhibernateOdata.Tests.Models
 	{
 		public virtual int Id { get; set; }
 
-		public virtual string Name { get; set; }
+        public virtual string Name { get; set; }
+
+        public virtual DateTime CreatedOn { get; set; }
+
+        public virtual decimal Value { get; set; }
 
 		public virtual IList<Child> Children { get; set; }
 

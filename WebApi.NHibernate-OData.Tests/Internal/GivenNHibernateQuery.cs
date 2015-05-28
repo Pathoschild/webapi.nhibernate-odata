@@ -70,12 +70,16 @@ namespace Pathoschild.WebApi.NhibernateOdata.Tests.Internal
         [Test]
         public void When_projecting_one_column_Then_only_queries_one_column()
         {
+            var visitor = new FixStringMethodsVisitor();
             Console.WriteLine("What it should look like:");
             var query = this._session.Query<Parent>().Select(x => new { x.Name }).ToList();
             Console.WriteLine("{0} results", query.Count);
 
-            var odataQuery = Helpers.Build<Parent>("$select=Name");
+            // The Expression output is some recursive thing (PropertyContainer+NamedPropertyWithNext).
+            // I think it might be easier to remove the current select node and rebuild with the actual ODataOptions directly.
+            var odataQuery = Helpers.Build<Parent>("$select=Id,Name,CreatedOn,Value");
             var parents = this._session.Query<Parent>();
+            parents = parents.InterceptWith(visitor);
 
             var results = odataQuery.ApplyTo(parents).Cast<object>();
 
@@ -106,6 +110,7 @@ namespace Pathoschild.WebApi.NhibernateOdata.Tests.Internal
         [TestCase("$filter=length(Name) eq 9", 2)]
         [TestCase("$filter=indexof(Name, '61') eq 8", 1)]
         [TestCase("$filter=concat(Name, 'test') eq 'parent 61test'", 1)]
+        //[TestCase("$filter=toupper(substring(Name, 1, 2)) eq 'AR'", 2)]
         public void When_filtering_with_string_methods_Then_generates_proper_nhibernate_query(string filter, int resultCount)
         {
             var visitor = new FixStringMethodsVisitor();
