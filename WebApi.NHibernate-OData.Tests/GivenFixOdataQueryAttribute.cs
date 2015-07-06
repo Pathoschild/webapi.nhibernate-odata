@@ -4,6 +4,7 @@ using Pathoschild.WebApi.NhibernateOdata.Tests.Models;
 
 namespace Pathoschild.WebApi.NhibernateOdata.Tests
 {
+    // ReSharper disable InconsistentNaming
 	[TestFixture]
 	public class GivenFixOdataQueryAttribute
 	{
