@@ -14,7 +14,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution", "solution", "{DFB10F3D-A05E-4A50-8A7C-4A3728DDC781}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		CONTRIBUTORS.md = CONTRIBUTORS.md
 		README.md = README.md
+		Rebracer.xml = Rebracer.xml
+		Settings.StyleCop = Settings.StyleCop
+		webapi.nhibernate-odata.sln.DotSettings = webapi.nhibernate-odata.sln.DotSettings
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi.NHibernate-OData.Tests", "WebApi.NHibernate-OData.Tests\WebApi.NHibernate-OData.Tests.csproj", "{F57860D1-0D06-47B7-9C00-F8826A8F7D81}"

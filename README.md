@@ -84,3 +84,14 @@ NHibernate fails to parse this into an SQL query. The `FixStringMethodsVisitor` 
 [nightly OData builds]: http://www.myget.org/gallery/aspnetwebstacknightly
 [NHibernate 3.4 trunk]: https://github.com/nhibernate/nhibernate-core
 [NuGet package]: https://nuget.org/packages/Pathoschild.WebApi.NHibernate-OData
+
+## Contributing
+
+Feel free to fork this repo, write a test for your use-case or bug and fix it.
+
+Included in the repository are StyleCop and ReSharper settings file. If possible, please use them appropriately
+to easily follow guidelines for style in the project. Use tabs and `git config core.autocrlf true` as well!
+
+### Contributors
+
+See the [CONTRIBUTORS](CONTRIBUTORS.md) file.
