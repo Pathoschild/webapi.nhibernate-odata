@@ -110,13 +110,13 @@ namespace Pathoschild.WebApi.NhibernateOdata.Tests.Internal
         [TestCase("$filter=length(Name) eq 9", 2)]
         [TestCase("$filter=indexof(Name, '61') eq 8", 1)]
         [TestCase("$filter=concat(Name, 'test') eq 'parent 61test'", 1)]
+        [TestCase("$filter=substringof('parent', Name) and Value eq 15.15m", 1)]
         //[TestCase("$filter=toupper(substring(Name, 1, 2)) eq 'AR'", 2)]
         public void When_filtering_with_string_methods_Then_generates_proper_nhibernate_query(string filter, int resultCount)
         {
-            var visitor = new FixStringMethodsVisitor();
             var odataQuery = Helpers.Build<Parent>(filter);
             var parents = this._session.Query<Parent>();
-            parents = parents.InterceptWith(visitor);
+            parents = FixOdataQueryAttribute.ApplyFix(parents);
 
             var results = odataQuery.ApplyTo(parents).Cast<Parent>().ToList();
             Assert.That(results, Has.Count.EqualTo(resultCount));

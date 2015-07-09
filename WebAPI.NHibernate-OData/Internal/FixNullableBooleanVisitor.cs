@@ -72,7 +72,18 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
 						this.MarkForRewrite(node.Left, node.Right);
 						Expression left = this.Visit(node.Left);
 						Expression right = this.Visit(node.Right);
-						node = Expression.AndAlso(left, right, node.Method);
+
+						// we can't have one nullable and one non-nullable. We can add a cast to nullable, NHibernate seems to handle this fine.
+						if (left.Type != right.Type)
+						{
+							if (left.Type == typeof(bool))
+								left = Expression.Convert(left, typeof (bool?));
+
+							if (right.Type == typeof(bool))
+							right = Expression.Convert(right, typeof(bool?));
+					    }
+
+					    node = Expression.AndAlso(left, right, node.Method);
 					}
 					break;
 

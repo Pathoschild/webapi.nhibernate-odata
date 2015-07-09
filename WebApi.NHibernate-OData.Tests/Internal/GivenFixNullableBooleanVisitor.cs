@@ -23,5 +23,19 @@ namespace Pathoschild.WebApi.NhibernateOdata.Tests.Internal
 			var list = results.ToList();
 			Assert.That(list, Has.Count.EqualTo(1));
 		}
+
+		[Test]
+		public void When_visiting_an_AndAlso_expression_with_one_nullable_and_one_non_nullable_boolean_Then_adds_cast_to_nullable()
+		{
+			var visitor = new FixNullableBooleanVisitor();
+			var odataQuery = Helpers.Build<Parent>("$filter=substringof('q',Name) and Value eq 2");
+			var data = new[] { new Parent { Id = 1, Name = "q", Value = 2 } }.AsQueryable();
+
+			var results = odataQuery.ApplyTo(data).Cast<object>();
+			results = results.InterceptWith(visitor);
+
+			var list = results.ToList();
+			Assert.That(list, Has.Count.EqualTo(1));
+		}
 	}
 }
