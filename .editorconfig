@@ -3,9 +3,6 @@ root = true
 
 ; newlines
 [*]
-end_of_line = CRLF
+end_of_line = crlf
 indent_style = tab
 indent_size = 4
-
-[*.xml]
-indent_size = 2

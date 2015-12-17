@@ -34,6 +34,7 @@
   <ItemGroup>
     <Compile Include="FixOdataQueryAttribute.cs" />
     <Compile Include="Internal\ActionFilterHelper.cs" />
+    <Compile Include="Internal\FixComponentNullCheckVisitor.cs" />
     <Compile Include="Internal\FixNullableBooleanVisitor.cs" />
     <Compile Include="Internal\FixStringMethodsVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

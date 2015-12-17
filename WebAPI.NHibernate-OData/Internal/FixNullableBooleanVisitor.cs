@@ -77,13 +77,13 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
 						if (left.Type != right.Type)
 						{
 							if (left.Type == typeof(bool))
-								left = Expression.Convert(left, typeof (bool?));
+								left = Expression.Convert(left, typeof(bool?));
 
 							if (right.Type == typeof(bool))
-							right = Expression.Convert(right, typeof(bool?));
-					    }
+								right = Expression.Convert(right, typeof(bool?));
+						}
 
-					    node = Expression.AndAlso(left, right, node.Method);
+						node = Expression.AndAlso(left, right, node.Method);
 					}
 					break;
 

@@ -9,13 +9,15 @@ namespace Pathoschild.WebApi.NhibernateOdata.Tests.Models
 	{
 		public virtual int Id { get; set; }
 
-        public virtual string Name { get; set; }
+		public virtual string Name { get; set; }
 
-        public virtual DateTime CreatedOn { get; set; }
+		public virtual DateTime CreatedOn { get; set; }
 
-        public virtual decimal Value { get; set; }
+		public virtual decimal Value { get; set; }
 
 		public virtual IList<Child> Children { get; set; }
+
+		public virtual ParentComponent Component { get; set; }
 
 		public override string ToString()
 		{
