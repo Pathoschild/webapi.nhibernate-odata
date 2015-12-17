@@ -40,7 +40,8 @@ namespace Pathoschild.WebApi.NhibernateOdata
 			return queryable
 				.InterceptWith(
 					new FixNullableBooleanVisitor(),
-					new FixStringMethodsVisitor()
+					new FixStringMethodsVisitor(),
+					new FixComponentNullCheckVisitor()
 				);
 		}
 
