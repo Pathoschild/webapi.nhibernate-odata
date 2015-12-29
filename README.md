@@ -20,6 +20,8 @@ protected void Application_Start()
 }
 ```
 
+See the [Samples](#samples) section for more details.
+
 ## Implementation details
 The attribute rewrites queries which aren't supported by NHibernate.
 
@@ -128,3 +130,16 @@ to easily follow guidelines for style in the project. Use tabs and `git config c
 ### Contributors
 
 See the [CONTRIBUTORS](CONTRIBUTORS.md) file.
+
+## Samples
+
+A project named WebApi.NHibernate-OData.Sample exists with usage examples.
+
+There are two controllers for the two ways to use it.
+
+The `parents` controller uses an attribute to modify the output along with the `EnableQueryAttribute` of Web API 2.
+
+The `children` controller call the fix directly in the action method if specific handling is necessary.
+
+    http://localhost:15394/parents?$filter=not%20substringof(%27wot%27,%20Name)%20and%20startswith(Name,%20%27parent%2061%27)&$select=Id,Name
+	http://localhost:15394/children?$filter=Parent/Component/Two eq 61
