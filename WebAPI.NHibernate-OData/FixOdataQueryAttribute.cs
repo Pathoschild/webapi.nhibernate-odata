@@ -22,7 +22,12 @@ namespace Pathoschild.WebApi.NhibernateOdata
 				return;
 
 			ObjectContent content = (ObjectContent)context.Response.Content;
-			Type entityType = content.ObjectType.GetGenericArguments().First();
+			if (content.Value == null || !content.Value.GetType().GetGenericArguments().Any())
+			{
+				return;
+			}
+
+			Type entityType = content.Value.GetType().GetGenericArguments().First();
 
 			this
 				.GetType()
@@ -57,7 +62,6 @@ namespace Pathoschild.WebApi.NhibernateOdata
 				.MakeGenericMethod(entityType)
 				.Invoke(null, new object[] { queryable });
 		}
-
 
 		/*********
 		** Protected methods
