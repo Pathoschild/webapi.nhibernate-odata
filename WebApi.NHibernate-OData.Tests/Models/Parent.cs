@@ -15,6 +15,8 @@ namespace Pathoschild.WebApi.NhibernateOdata.Tests.Models
 
 		public virtual decimal Value { get; set; }
 
+		public virtual Guid? ValueGuid { get; set; }
+
 		public virtual IList<Child> Children { get; set; }
 
 		public virtual ParentComponent Component { get; set; }
