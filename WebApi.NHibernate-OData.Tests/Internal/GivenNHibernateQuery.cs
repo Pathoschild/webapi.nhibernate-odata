@@ -92,6 +92,7 @@ namespace Pathoschild.WebApi.NhibernateOdata.Tests.Internal
 		}
 
 		[TestCase("$filter=Name eq 'parent 61'", 1)]
+		[TestCase("$filter=Name eq 'parent 61' or ValueGuid eq guid'e741c1cd-2e75-44c1-b3e8-7b0d5df435ce'", 2)]
 		[TestCase("$filter=substringof('parent', Name) eq true", 2)]
 		[TestCase("$filter=substringof('parent', Name) eq true and substringof('61', Name) eq false", 1)]
 		[TestCase("$filter=substringof('parent', Name)", 2)]

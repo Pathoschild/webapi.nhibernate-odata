@@ -12,6 +12,7 @@ namespace Pathoschild.WebApi.NhibernateOdata.Tests.Mappings
 			this.Map(x => x.Name);
 			this.Map(x => x.CreatedOn);
 			this.Map(x => x.Value);
+			this.Map(x => x.ValueGuid);
 
 			this.Component(
 				x => x.Component,
