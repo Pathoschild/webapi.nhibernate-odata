@@ -13,7 +13,12 @@ namespace Pathoschild.WebApi.NhibernateOdata.Tests
 		{
 			ODataModelBuilder modelBuilder = new ODataConventionModelBuilder(new HttpConfiguration(), true);
 			modelBuilder.EntitySet<T>("Set");
-			var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost/?" + odataQueryString);
+			if (!odataQueryString.Contains("?"))
+			{
+				odataQueryString = "?" + odataQueryString;
+			}
+
+			var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost/" + odataQueryString);
 			var model = modelBuilder.GetEdmModel();
 			return new ODataQueryOptions<T>(new ODataQueryContext(model, typeof(T)), request);
 		}

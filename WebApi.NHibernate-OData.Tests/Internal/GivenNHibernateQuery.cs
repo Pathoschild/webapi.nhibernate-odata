@@ -137,5 +137,16 @@ namespace Pathoschild.WebApi.NhibernateOdata.Tests.Internal
 			var results = odataQuery.ApplyTo(children).Cast<Child>().ToList();
 			Assert.That(results, Has.Count.EqualTo(resultCount));
 		}
+
+		[Test]
+		public void When_counting_Then_works()
+		{
+			var odataQuery = Helpers.Build<Child>("$count?$filter=Parent/Component/Two eq 61");
+			var children = this._session.Query<Child>();
+			children = FixOdataQueryAttribute.ApplyFix(children);
+
+			var results = odataQuery.ApplyTo(children).Cast<dynamic>().ToList();
+			Assert.That(results, Is.Not.Null);
+		}
 	}
 }
