@@ -8,3 +8,5 @@ packages/
 *.suo
 *.nupkg
 *.user
+/.nuget/nuget.exe
+.vs
