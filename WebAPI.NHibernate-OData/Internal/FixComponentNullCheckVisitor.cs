@@ -69,12 +69,11 @@ namespace Pathoschild.WebApi.NhibernateOdata.Internal
 				if (((ConstantExpression)binaryExpression.Right).Value == null)
 				{
 					// Ignore the null check and always return the value.
-					return ifElse.IfFalse;
+					return base.Visit(ifElse.IfFalse);
 				}
 			}
 
-			Console.WriteLine(ifElse);
-			return original;
+			return base.Visit(original);
 		}
 	}
 }
