@@ -141,12 +141,12 @@ namespace Pathoschild.WebApi.NhibernateOdata.Tests.Internal
 		[Test]
 		public void When_counting_Then_works()
 		{
-			var odataQuery = Helpers.Build<Child>("$count?$filter=Parent/Component/Two eq 61");
-			var children = this._session.Query<Child>();
-			children = FixOdataQueryAttribute.ApplyFix(children);
+			var odataQuery = Helpers.Build<Parent>("$count?$filter=Id ne 0 and Children/any(entity:entity/Parent/Id eq 61)");
+			var records = this._session.Query<Parent>();
+			records = FixOdataQueryAttribute.ApplyFix(records);
 
-			var results = odataQuery.ApplyTo(children).Cast<dynamic>().ToList();
-			Assert.That(results, Is.Not.Null);
+			var results = odataQuery.ApplyTo(records).Cast<Parent>().LongCount();
+			Assert.That(results, Is.EqualTo(1));
 		}
 	}
 }
